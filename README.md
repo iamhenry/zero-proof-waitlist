@@ -180,17 +180,28 @@ Common issues and solutions:
        ```
      - If using a local file in development, use `GOOGLE_APPLICATION_CREDENTIALS=service-account.json`
 
-3. **Rate Limiting Issues**:
+3. **ENAMETOOLONG Error**:
+
+   - Error message: "Error: ENAMETOOLONG: name too long, open '/var/task/frontend/{...}'"
+   - This occurs when the system tries to treat the JSON string as a file path
+   - Solution:
+     - Update the code to parse the credentials directly from the environment variable
+     - Do not use `fs.readFileSync` with the credentials string
+     - Make sure your deployment platform supports long environment variable values
+     - For Vercel: Use the environment variables UI or CLI to set the value
+     - For other platforms: Check their documentation for maximum environment variable length limits
+
+4. **Rate Limiting Issues**:
 
    - Default limit is 5 requests per hour per IP
    - Adjust `RATE_LIMIT_REQUESTS` and `RATE_LIMIT_DURATION` if needed
 
-4. **Invalid Email Formats**:
+5. **Invalid Email Formats**:
 
    - The app validates email format before submission
    - Check the email validation regex in the API route if needed
 
-5. **Service Account Issues**:
+6. **Service Account Issues**:
    - Ensure the service account email has Editor access to the sheet
    - Verify the JSON file is properly formatted
    - Check that all required fields are present in the service account JSON

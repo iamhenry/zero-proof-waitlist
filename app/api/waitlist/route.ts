@@ -1,6 +1,8 @@
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library'
 import { NextRequest, NextResponse } from 'next/server'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
 // Rate limiting map
 const ipRequests = new Map<string, { count: number; timestamp: number }>()
@@ -32,28 +34,39 @@ function formatDate(date: Date): string {
   })
 }
 
+async function getServiceAccountCredentials() {
+  const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS
+
+  if (!credentials) {
+    throw new Error('Missing GOOGLE_APPLICATION_CREDENTIALS environment variable')
+  }
+
+  try {
+    // First try to parse as JSON string (production environment)
+    if (credentials.startsWith('{')) {
+      return JSON.parse(credentials)
+    }
+
+    // If not JSON, assume it's a file path (local development)
+    const filePath = join(process.cwd(), credentials)
+    const fileContents = readFileSync(filePath, 'utf-8')
+    return JSON.parse(fileContents)
+  } catch (error) {
+    console.error('Error reading service account credentials:', error)
+    throw new Error('Failed to read service account credentials')
+  }
+}
+
 async function addToSheet(email: string) {
   try {
     if (!process.env.GOOGLE_SHEET_ID) {
       throw new Error('Missing GOOGLE_SHEET_ID environment variable')
     }
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-      throw new Error('Missing GOOGLE_APPLICATION_CREDENTIALS environment variable')
-    }
 
-    // Parse the credentials JSON from environment variable
-    let serviceAccountCreds
-    try {
-      serviceAccountCreds = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS)
-      console.log('Successfully parsed service account credentials')
-    } catch (error) {
-      console.error('Error parsing service account credentials:', error)
-      throw new Error('Invalid service account credentials format')
-    }
-
+    // Get credentials using the new helper function
+    const serviceAccountCreds = await getServiceAccountCredentials()
     console.log('Service Account Email:', serviceAccountCreds.client_email)
     console.log('Sheet ID:', process.env.GOOGLE_SHEET_ID)
-    console.log('Private Key starts with:', serviceAccountCreds.private_key.substring(0, 50))
 
     // First verify the JWT can authenticate
     const auth = new JWT({
