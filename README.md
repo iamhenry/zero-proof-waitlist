@@ -89,11 +89,16 @@ Update your `.env` file with the following values:
 ```env
 # Google Sheets Configuration
 GOOGLE_SHEET_ID=your-sheet-id-here
+
+# For local development, you can use the path to the JSON file
 GOOGLE_APPLICATION_CREDENTIALS=service-account.json
 
+# For production, use the entire JSON content (recommended)
+# GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account","project_id":"..."}
+
 # Rate Limiting Configuration
-RATE_LIMIT_REQUESTS=5
-RATE_LIMIT_DURATION=3600000
+RATE_LIMIT_REQUESTS=5        # Maximum requests per IP per duration
+RATE_LIMIT_DURATION=3600000  # Duration in milliseconds (1 hour = 3600000)
 ```
 
 ### 5. Running the Application
@@ -118,30 +123,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 1. Push your code to GitHub
 2. Import your repository in Vercel
 3. Add environment variables in Vercel:
-
    - Add `GOOGLE_SHEET_ID` as is
-   - For `GOOGLE_APPLICATION_CREDENTIALS`, you have two options:
-
-     Option 1 (Recommended for production):
-
+   - For `GOOGLE_APPLICATION_CREDENTIALS`:
      - Copy the ENTIRE contents of your `service-account.json` file
-     - Create a new environment variable in Vercel called `GOOGLE_APPLICATION_CREDENTIALS_JSON`
-     - Paste the JSON contents as the value
-     - Update your code to use this JSON string instead of reading from a file
-
-     Option 2:
-
-     - Upload the `service-account.json` file directly to Vercel
-     - Set `GOOGLE_APPLICATION_CREDENTIALS` to the path where Vercel stores it
-
+     - Paste it directly as the value for `GOOGLE_APPLICATION_CREDENTIALS`
+     - Make sure to include all JSON fields and format it as a single line
+     - Example format:
+       ```
+       GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account","project_id":"your-project","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n..."}
+       ```
 4. Deploy!
 
 ### Other Deployment Platforms
 
 For other platforms, ensure you:
 
-1. Set up all environment variables
-2. Either include the service account JSON file in your deployment or use the JSON contents as an environment variable
+1. Set up all environment variables as described above
+2. Use the JSON content directly in `GOOGLE_APPLICATION_CREDENTIALS`
 3. Verify the service account has access to your Google Sheet
 
 ## Environment Variables for Production
@@ -151,8 +149,7 @@ When deploying to production:
 1. Required variables:
 
    - `GOOGLE_SHEET_ID`: Your Google Sheet ID
-   - `GOOGLE_APPLICATION_CREDENTIALS`: Path to service account file
-   - OR `GOOGLE_APPLICATION_CREDENTIALS_JSON`: The entire JSON contents of your service account file
+   - `GOOGLE_APPLICATION_CREDENTIALS`: The entire JSON contents of your service account credentials
 
 2. Optional variables:
    - `RATE_LIMIT_REQUESTS`: Maximum requests per IP (default: 5)
@@ -169,17 +166,31 @@ Common issues and solutions:
    - Ensure environment variables are properly formatted
    - Verify the service account JSON is valid
 
-2. **Rate Limiting Issues**:
+2. **Service Account Credentials Format**:
+
+   - The `GOOGLE_APPLICATION_CREDENTIALS` must be a single-line JSON string
+   - Common error: "Invalid service account credentials format"
+   - Solution:
+     - Remove all newlines and extra spaces from the JSON
+     - Keep `\n` characters in the private key
+     - Ensure all quotes are properly escaped
+     - Example format:
+       ```env
+       GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account","project_id":"your-project","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\nMIIE...==\n-----END PRIVATE KEY-----\n","client_email":"..."}
+       ```
+     - If using a local file in development, use `GOOGLE_APPLICATION_CREDENTIALS=service-account.json`
+
+3. **Rate Limiting Issues**:
 
    - Default limit is 5 requests per hour per IP
    - Adjust `RATE_LIMIT_REQUESTS` and `RATE_LIMIT_DURATION` if needed
 
-3. **Invalid Email Formats**:
+4. **Invalid Email Formats**:
 
    - The app validates email format before submission
    - Check the email validation regex in the API route if needed
 
-4. **Service Account Issues**:
+5. **Service Account Issues**:
    - Ensure the service account email has Editor access to the sheet
    - Verify the JSON file is properly formatted
    - Check that all required fields are present in the service account JSON

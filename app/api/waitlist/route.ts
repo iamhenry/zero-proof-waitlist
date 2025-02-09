@@ -1,8 +1,6 @@
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library'
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync } from 'fs'
-import path from 'path'
 
 // Rate limiting map
 const ipRequests = new Map<string, { count: number; timestamp: number }>()
@@ -43,18 +41,14 @@ async function addToSheet(email: string) {
       throw new Error('Missing GOOGLE_APPLICATION_CREDENTIALS environment variable')
     }
 
-    // Read and parse the service account file
-    const serviceAccountPath = path.join(process.cwd(), process.env.GOOGLE_APPLICATION_CREDENTIALS)
-    console.log('Reading service account from:', serviceAccountPath)
-    
+    // Parse the credentials JSON from environment variable
     let serviceAccountCreds
     try {
-      const fileContents = readFileSync(serviceAccountPath, 'utf-8')
-      serviceAccountCreds = JSON.parse(fileContents)
-      console.log('Successfully read service account file')
+      serviceAccountCreds = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS)
+      console.log('Successfully parsed service account credentials')
     } catch (error) {
-      console.error('Error reading service account file:', error)
-      throw new Error('Failed to read service account credentials')
+      console.error('Error parsing service account credentials:', error)
+      throw new Error('Invalid service account credentials format')
     }
 
     console.log('Service Account Email:', serviceAccountCreds.client_email)
