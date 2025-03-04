@@ -47,7 +47,7 @@ export function WaitlistForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded-full pr-32 h-12 text-base shadow-none"
+          className="w-full px-6 rounded-full pr-32 h-12 text-base shadow-none"
           disabled={isLoading}
         />
         <button
