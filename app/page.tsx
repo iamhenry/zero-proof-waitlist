@@ -6,10 +6,10 @@ export default function Home() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight">
-            Join the Waitlist
+            Every Sober Day Counts. See Exactly How Much.
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Be the first to know when we launch. Sign up for early access.
+            Watch your health improve and savings grow in real-time
           </p>
         </div>
         <WaitlistForm />

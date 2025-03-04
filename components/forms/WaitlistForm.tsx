@@ -53,7 +53,7 @@ export function WaitlistForm() {
         />
       </div>
       <Button type="submit" className="w-full h-12" disabled={isLoading}>
-        {isLoading ? "Joining..." : "Join Waitlist"}
+        {isLoading ? "Joining..." : "Join the Beta"}
       </Button>
     </form>
   );
