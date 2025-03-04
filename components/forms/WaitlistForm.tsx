@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-hot-toast";
 
@@ -40,21 +39,27 @@ export function WaitlistForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
+    <form onSubmit={handleSubmit} className="relative">
+      <div className="relative">
         <Input
           type="email"
-          placeholder="Enter your email"
+          placeholder="email..."
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="h-12"
+          className="w-full rounded-full pr-32 h-12 text-base shadow-none"
           disabled={isLoading}
         />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="absolute right-2 top-2 h-8 px-3 bg-gradient-to-t from-red-500 to-orange-600 rounded-full flex items-center justify-center"
+        >
+          <span className="text-white text-xs font-bold font-inter leading-none">
+            Join the Beta
+          </span>
+        </button>
       </div>
-      <Button type="submit" className="w-full h-12" disabled={isLoading}>
-        {isLoading ? "Joining..." : "Join the Beta"}
-      </Button>
     </form>
   );
 }
