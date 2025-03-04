@@ -1,5 +1,5 @@
 import { WaitlistForm } from "@/components/forms/WaitlistForm";
-import Image from "next/image";
+import CountdownTimer from "@/components/ui/countdown-timer";
 
 export default function Home() {
   return (
@@ -18,14 +18,12 @@ export default function Home() {
             <WaitlistForm />
           </div>
         </div>
-        <div className="relative w-[80%] m-auto aspect-[1.5/1]">
-          <Image
-            src="/zero-proof-ui.png"
-            alt="Zero Proof UI showing calendar view with streak and savings tracking"
-            fill
-            className="object-contain"
-            priority
-          />
+        <div className="relative w-[80%] mx-auto">
+          <div className="relative aspect-[1.5/1] bg-[url('/zero-proof-ui.png')] bg-contain bg-center bg-no-repeat">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-[2rem]">
+              <CountdownTimer />
+            </div>
+          </div>
         </div>
       </div>
     </main>
