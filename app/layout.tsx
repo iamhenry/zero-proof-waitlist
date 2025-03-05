@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Zero Proof App- Every Sober Day Counts",
+  title: "Zero Proof App - Every Sober Day Counts",
   description: "Watch your health improve and savings grow in real-time.",
 };
 
