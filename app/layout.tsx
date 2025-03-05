@@ -14,8 +14,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Join Our Waitlist",
-  description: "Sign up to be notified when we launch.",
+  title: "Zero Proof App- Every Sober Day Counts",
+  description: "Watch your health improve and savings grow in real-time.",
 };
 
 export default function RootLayout({
