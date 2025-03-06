@@ -20,7 +20,7 @@ function AnimatedContent() {
             alt="Zero Proof App Icon"
             width={120}
             height={120}
-            className="w-full h-full"
+            className="w-full"
             priority
           />
         </motion.div>
